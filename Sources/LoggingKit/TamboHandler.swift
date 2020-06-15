@@ -1,12 +1,29 @@
 import Foundation
 import Logging
+import Combine
 
+@available(OSX 10.15, *)
 public struct TamboHandler: LogHandler {
 
     let identifier: String
-    var streams: [StreamProtocol] = []
+    let streams: [StreamProtocol]
     public var metadata = Logger.Metadata()
     public var logLevel: Logger.Level = .trace
+    var logPublisher = PassthroughSubject<Log, Never>()
+
+    init(identifier: String, streams: [StreamProtocol]) {
+        assert(streams.isEmpty == false)
+        self.identifier = identifier
+        self.streams = streams
+
+        logPublisher = PassthroughSubject<Log, Never>()
+        streams.forEach { stream in
+            stream.subscribe(
+                to: logPublisher
+                    .eraseToAnyPublisher()
+            )
+        }
+    }
 
     public func log(level: Logger.Level,
                     message: Logger.Message,
@@ -14,6 +31,8 @@ public struct TamboHandler: LogHandler {
                     file: String,
                     function: String,
                     line: UInt) {
+
+        guard level >= logLevel else { return }
 
         let log = Log(
             handlerIdentifier: identifier,
@@ -27,9 +46,8 @@ public struct TamboHandler: LogHandler {
             logMetadata: metadata,
             handlerMetadata: self.metadata
         )
-        streams
-            .filter { !$0.should(filterOut: log) }
-            .forEach { $0.process(log) }
+
+        logPublisher.send(log)
     }
 
     public subscript(metadataKey metadataKey: String) -> Logger.Metadata.Value? {
