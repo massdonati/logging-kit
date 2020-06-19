@@ -24,15 +24,15 @@ extension Logger.Level {
 }
 
 extension Logger.Metadata {
-    func toJsonObject() -> [String: Any] {
+    public func toJsonObject() -> [String: Any] {
         return self.mapValues { $0.toJsonObject() }
     }
 
-    func toJSONString() -> String? {
+    public func toJSONString(_ writeOption: JSONSerialization.WritingOptions) -> String? {
         do {
             let data = try JSONSerialization
                 .data(withJSONObject: toJsonObject(),
-                      options: .prettyPrinted)
+                      options: writeOption)
             return String(data: data, encoding: .utf8)
         } catch {
             log?.critical("can't decode metadata", metadata: self)
@@ -43,7 +43,7 @@ extension Logger.Metadata {
 
 extension Logger.MetadataValue {
 
-    func toJsonObject() -> Any {
+    public func toJsonObject() -> Any {
         switch self {
         case.string(let string):
             return string

@@ -9,30 +9,32 @@ import Foundation
 import Logging
 
 /// The Xcode console stream. It will output the logs to the Xcode console.
-public class ConsoleLogStream: FormattedLogStream {
+public class ConsoleLogStream: MappedLogStream {
     public let identifier: String
     public let dispatchingMode: DispatchingMode
     public let level: Level
     public var metadata: Logger.Metadata
-    public let formatter = StringLogFormatter()
+    public let mapper: StringLogMapper
 
     public init(identifier: String,
                 dispatchingMode: DispatchingMode = .async,
                 level: Level = .all,
-                metadata: Logger.Metadata = .init()) {
+                metadata: Logger.Metadata = .init(),
+                formatter: StringLogMapper = .init()) {
         self.identifier = identifier
         self.dispatchingMode = dispatchingMode
         self.level = level
         self.metadata = metadata
+        self.mapper = formatter
     }
 
-    public func output(original log: Log, formattedLog: Result<String, Error>) {
-        print(formattedLog.printableString)
+    public func output(original log: Log, result: Result<String, Error>) {
+        print(result.description)
     }
 }
 
 extension Swift.Result where Success: CustomStringConvertible {
-    var printableString: String {
+    var description: String {
         switch self {
         case .success(let string):
             return string.description

@@ -1,0 +1,27 @@
+//
+//  LogFormatter.swift
+//
+//
+//  Created by Massimo Donati on 6/15/20.
+//
+
+import Foundation
+
+/**
+ A LogFormatter is used to map a `Log` instance into an `Output` type.
+
+ It is designed to be part by the `FormattedLogStream` definition and it will define what would be the
+ Output type of the stream it self.
+ */
+public protocol LogMapper {
+
+    /// The type the formtter will map the Log instance into
+    associatedtype Output
+
+    /**
+     Maps a Log instance into the `Output`
+     - parameter log: a log instance
+     - returns: either the mapped `Output` or an error indicating what went wrong
+     */
+    func map(_ log: Log) -> Result<Output, Error>
+}

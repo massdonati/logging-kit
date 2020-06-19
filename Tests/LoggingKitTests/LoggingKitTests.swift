@@ -3,6 +3,7 @@ import XCTest
 
 final class LoggingKitTests: XCTestCase {
     func testExample() {
+
     }
 
     static var allTests = [

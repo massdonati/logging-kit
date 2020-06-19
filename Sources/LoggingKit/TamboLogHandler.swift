@@ -12,12 +12,12 @@ var log: Logger?
 
 public enum LoggingKitSystem {
     public static func setDebug(_ debug: Bool) {
-        log = debug ? Logger(label: "com.tambo-handler.debug-logger") : nil
+        log = debug ? Logger(label: "com.tambo.handler.debug.logger") : nil
     }
 }
 
 public struct TamboLogHandler: LogHandler {
-    let queue = DispatchQueue(label: "com.tambo-handler.queue", qos: .utility)
+    let queue = DispatchQueue(label: "com.tambo.handler.queue", qos: .utility)
     let identifier: String
     var streams: [LogStream] = []
     public var metadata = Logger.Metadata()
