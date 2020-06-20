@@ -13,8 +13,8 @@ import Logging
 class StringFormatterTests: XCTestCase {
 
     func testDefaultFormatString() {
-        let mapper = StringLogMapper()
-        XCTAssertEqual(mapper.logFormat, "[d] [h] t s F:# f - m\nM")
+        let formatter = DefaultStringFormatter()
+        XCTAssertEqual(formatter.logFormat, "[d] [h] t s F:# f - m\nM")
         let date = Date()
         let log = Log.fixture(
             handler: "h.id",
@@ -28,7 +28,7 @@ class StringFormatterTests: XCTestCase {
             metadata: ["user_id": .string("123")]
         )
 
-        let formattedString = mapper.map(log)
+        let formattedString = formatter.string(from: log)
         let expectedString = """
             [\(String(describing:date))] [h.id] thread 🔷 file:27 function - message
             {
@@ -40,8 +40,8 @@ class StringFormatterTests: XCTestCase {
     }
 
     func testDefaultFormatStringMissingThread() {
-        let mapper = StringLogMapper()
-        XCTAssertEqual(mapper.logFormat, "[d] [h] t s F:# f - m\nM")
+        let formatter = DefaultStringFormatter()
+        XCTAssertEqual(formatter.logFormat, "[d] [h] t s F:# f - m\nM")
         let date = Date()
         let log = Log.fixture(
             handler: "h.id",
@@ -54,7 +54,7 @@ class StringFormatterTests: XCTestCase {
             metadata: ["user_id": .string("123")]
         )
 
-        let formattedString = mapper.map(log)
+        let formattedString = formatter.string(from: log)
 
         // the symble `t` will be replaced with an empty string leaving
         // two consecutive spaces
@@ -69,73 +69,73 @@ class StringFormatterTests: XCTestCase {
     }
 
     func testDefaultDateFormatterFormat() {
-        let mapper = StringLogMapper()
-        XCTAssertNil(mapper.dateFormatter)
-        XCTAssertEqual(mapper.writingOption, .prettyPrinted)
+        let formatter = DefaultStringFormatter()
+        XCTAssertNil(formatter.dateFormatter)
+        XCTAssertEqual(formatter.writingOption, .prettyPrinted)
     }
 
 
     func testDateOnly() {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "HH:mm:ss.SSS"
-        var mapper = StringLogMapper(with: "d", dateFormatter: dateFormatter)
+        var formatter = DefaultStringFormatter(with: "d", dateFormatter: dateFormatter)
         let date = Date()
         let log = Log.fixture(date: date)
-        let stringDate = mapper.dateFormatter!.string(from: date)
-        let outString = mapper.map(log)
+        let stringDate = formatter.dateFormatter!.string(from: date)
+        let outString = formatter.string(from: log)
         XCTAssertEqual(stringDate, outString)
 
         // test additional text
 
-        mapper = StringLogMapper(with: "[d]", dateFormatter: dateFormatter)
-        let outStringTwo = mapper.map(log)
+        formatter = DefaultStringFormatter(with: "[d]", dateFormatter: dateFormatter)
+        let outStringTwo = formatter.string(from: log)
         XCTAssertEqual("[\(stringDate)]", outStringTwo)
     }
 
     func testHandlerOnly() {
-        var mapper = StringLogMapper(with: "h")
+        var formatter = DefaultStringFormatter(with: "h")
         let handlerId = "com.tambo.logger"
         let log = Log.fixture(handler: handlerId)
 
-        let outString = mapper.map(log)
+        let outString = formatter.string(from: log)
         XCTAssertEqual(handlerId, outString)
 
         // test additional text
 
-        mapper = StringLogMapper(with: "[h]")
-        let outStringTwo = mapper.map(log)
+        formatter = DefaultStringFormatter(with: "[h]")
+        let outStringTwo = formatter.string(from: log)
         XCTAssertEqual("[\(handlerId)]", outStringTwo)
     }
 
     func testThreadNameOnly() {
-        var mapper = StringLogMapper(with: "t")
+        var formatter = DefaultStringFormatter(with: "t")
         let threadName = "main"
         let log = Log.fixture(thread: threadName)
 
-        let outString = mapper.map(log)
+        let outString = formatter.string(from: log)
         XCTAssertEqual(threadName, outString)
 
         // test additional text
 
-        mapper = StringLogMapper(with: "[t]")
-        let outStringTwo = mapper.map(log)
+        formatter = DefaultStringFormatter(with: "[t]")
+        let outStringTwo = formatter.string(from: log)
         XCTAssertEqual("[\(threadName)]", outStringTwo)
     }
 
     func testLevelNameOnly() {
         let levels = Logger.Level.allCases
         levels.forEach { level in
-            var mapper = StringLogMapper(with: "l")
+            var formatter = DefaultStringFormatter(with: "l")
 
             let log = Log.fixture(level: level)
 
-            let outString = mapper.map(log)
+            let outString = formatter.string(from: log)
             XCTAssertEqual(level.rawValue, outString)
 
             // test additional text
 
-            mapper = StringLogMapper(with: "[l]")
-            let outStringTwo = mapper.map(log)
+            formatter = DefaultStringFormatter(with: "[l]")
+            let outStringTwo = formatter.string(from: log)
             XCTAssertEqual("[\(level.rawValue)]", outStringTwo)
         }
     }
@@ -143,17 +143,17 @@ class StringFormatterTests: XCTestCase {
     func testLevelSymbolOnly() {
         let levels = Logger.Level.allCases
         levels.forEach { level in
-            var mapper = StringLogMapper(with: "s")
+            var formatter = DefaultStringFormatter(with: "s")
 
             let log = Log.fixture(level: level)
 
-            let outString = mapper.map(log)
+            let outString = formatter.string(from: log)
             XCTAssertEqual(level.symbol, outString)
 
             // test additional text
 
-            mapper = StringLogMapper(with: "[s]")
-            let outStringTwo = mapper.map(log)
+            formatter = DefaultStringFormatter(with: "[s]")
+            let outStringTwo = formatter.string(from: log)
             XCTAssertEqual("[\(level.symbol)]", outStringTwo)
         }
     }
@@ -161,64 +161,64 @@ class StringFormatterTests: XCTestCase {
     func testFileNameOnly() {
         let fileName = "TamboViewController"
         let filePath = "/proj/\(fileName).swift"
-        var mapper = StringLogMapper(with: "F")
+        var formatter = DefaultStringFormatter(with: "F")
 
         let log = Log.fixture(file: filePath)
 
-        let outString = mapper.map(log)
+        let outString = formatter.string(from: log)
         XCTAssertEqual(fileName, outString)
 
         // test additional text
 
-        mapper = StringLogMapper(with: "[F]")
-        let outStringTwo = mapper.map(log)
+        formatter = DefaultStringFormatter(with: "[F]")
+        let outStringTwo = formatter.string(from: log)
         XCTAssertEqual("[\(fileName)]", outStringTwo)
     }
 
     func testFunctionNameOnly() {
         let functionName = "viewDidLoad()"
-        var mapper = StringLogMapper(with: "f")
+        var formatter = DefaultStringFormatter(with: "f")
 
         let log = Log.fixture(function: functionName)
 
-        let outString = mapper.map(log)
+        let outString = formatter.string(from: log)
         XCTAssertEqual(functionName, outString)
 
         // test additional text
 
-        mapper = StringLogMapper(with: "[f]")
-        let outStringTwo = mapper.map(log)
+        formatter = DefaultStringFormatter(with: "[f]")
+        let outStringTwo = formatter.string(from: log)
         XCTAssertEqual("[\(functionName)]", outStringTwo)
     }
 
     func testLineNumberOnly() {
         let lineNumber: UInt = 24
-        var mapper = StringLogMapper(with: "#")
+        var formatter = DefaultStringFormatter(with: "#")
 
         let log = Log.fixture(line: lineNumber)
 
-        let outString = mapper.map(log)
+        let outString = formatter.string(from: log)
         XCTAssertEqual("\(lineNumber)", outString)
 
         // test additional text
 
-        mapper = StringLogMapper(with: "[#]")
-        let outStringTwo = mapper.map(log)
+        formatter = DefaultStringFormatter(with: "[#]")
+        let outStringTwo = formatter.string(from: log)
         XCTAssertEqual("[\(lineNumber)]", outStringTwo)
     }
 
     func testMessageOnly() {
-        var mapper = StringLogMapper(with: "m")
+        var formatter = DefaultStringFormatter(with: "m")
 
         let log = Log.fixture(message: "some info message")
 
-        let outString = mapper.map(log)
+        let outString = formatter.string(from: log)
         XCTAssertEqual("some info message", outString)
 
         // test additional text
 
-        mapper = StringLogMapper(with: "[m]")
-        let outStringTwo = mapper.map(log)
+        formatter = DefaultStringFormatter(with: "[m]")
+        let outStringTwo = formatter.string(from: log)
         XCTAssertEqual("[\("some info message")]", outStringTwo)
     }
 
@@ -230,18 +230,18 @@ class StringFormatterTests: XCTestCase {
         }
         """
 
-        var mapper = StringLogMapper(with: "M")
+        var formatter = DefaultStringFormatter(with: "M")
 
         let log = Log.fixture(metadata: metadata)
 
-        let outString = mapper.map(log)
+        let outString = formatter.string(from: log)
 
         XCTAssertEqual(expectedString, outString)
 
         // test additional text
 
-        mapper = StringLogMapper(with: "[M]")
-        let outStringTwo = mapper.map(log)
+        formatter = DefaultStringFormatter(with: "[M]")
+        let outStringTwo = formatter.string(from: log)
         XCTAssertEqual("[\(expectedString)]", outStringTwo)
     }
 }
