@@ -8,8 +8,14 @@
 import Foundation
 
 func threadName() -> String? {
-    String(cString: __dispatch_queue_get_label(nil),
-           encoding: .utf8)
+    #if os(Linux)
+    return Thread.current.name
+    #else
+    return String(
+        cString: __dispatch_queue_get_label(nil),
+        encoding: .utf8
+    )
+    #endif
 }
 
 func filename(from path: String) -> String? {
@@ -18,3 +24,11 @@ func filename(from path: String) -> String? {
         .pathComponents
         .last
 }
+
+#if os(Linux)
+extension DispatchQueue: Equatable {
+    public static func ==(lhs: DispatchQueue, rhs: DispatchQueue) -> Bool {
+        return lhs.label == rhs.label
+    }
+}
+#endif

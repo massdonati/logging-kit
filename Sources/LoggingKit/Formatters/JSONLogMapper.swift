@@ -18,7 +18,7 @@ public final class JSONLogFormatter: LogMapper {
         do {
             let data = try JSONSerialization.data(
                 withJSONObject: logJSONObject,
-                options: .withoutEscapingSlashes
+                options: .prettyPrinted
             )
             return .success(data)
         } catch {

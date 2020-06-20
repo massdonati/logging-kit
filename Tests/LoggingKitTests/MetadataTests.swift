@@ -26,8 +26,4 @@ final class MetadataTests: XCTestCase {
         meta1 += meta2
         XCTAssertEqual(meta1.keys.count, 1)
     }
-    static var allTests = [
-        ("testCombiningMetadata1", testCombiningMetadata1),
-        ("testCombiningMetadata2", testCombiningMetadata2)
-    ]
 }
