@@ -9,7 +9,7 @@ import XCTest
 extension LoggingKitTests {
     static var allTests: [(String, (LoggingKitTests) -> () throws -> Void)] {
         return [
-            ("testExample", testExample),
+            ("testMetadataStringConvertible", testMetadataStringConvertible),
         ]
     }
 }
