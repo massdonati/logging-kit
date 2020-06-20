@@ -19,8 +19,8 @@ public enum LoggingKitSystem {
 public struct TamboLogHandler: LogHandler {
     let queue = DispatchQueue(label: "com.tambo.handler.queue", qos: .utility)
     let identifier: String
-    var streams: [LogStream] = []
-    public var metadata = Logger.Metadata()
+    @Atomic var streams: [LogStream] = []
+    @Atomic public var metadata = Logger.Metadata()
     public var logLevel: Logger.Level
 
     public init(identifier: String,
@@ -30,14 +30,21 @@ public struct TamboLogHandler: LogHandler {
         self.streams = [ConsoleLogStream(identifier: "com.tambo-handler.console")]
     }
 
+    public init(identifier: String,
+                logLevel: Logger.Level = .trace,
+                streams: [LogStream]) {
+        self.identifier = identifier
+        self.logLevel = logLevel
+        self.streams = streams
+    }
+
     mutating public func add(stream: LogStream) {
         let duplicate = streams.contains { $0.identifier == stream.identifier }
         guard !duplicate else { return }
         streams.append(stream)
     }
 
-    mutating public func setStreams(streams: [LogStream]) {
-        self.streams = []
+    mutating public func add(streams: [LogStream]) {
         streams.forEach { self.add(stream: $0) }
     }
 
@@ -57,7 +64,7 @@ public struct TamboLogHandler: LogHandler {
             function: function,
             file: file,
             line: line,
-            metadata: aggregateMetadata(with: metadata)
+            metadata: self.metadata.merge(metadata)
         )
         
         streams
@@ -73,17 +80,6 @@ public struct TamboLogHandler: LogHandler {
         set(newValue) {
             metadata[metadataKey] = newValue
         }
-    }
-
-    func aggregateMetadata(with logMetadata: Logger.Metadata?) -> Logger.Metadata? {
-        var logMeta = Logger.Metadata()
-        if metadata.isEmpty == false {
-            logMeta = [identifier: .dictionary(metadata)]
-        }
-
-        logMeta += logMetadata
-
-        return logMeta.isEmpty ? nil : logMeta
     }
 }
 

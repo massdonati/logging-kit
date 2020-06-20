@@ -33,7 +33,7 @@ final class LogHandlerAutoStreamConformanceTests: XCTestCase {
 
         let log = Logger(label: "logger_id") { id in
             var tHandler = TamboLogHandler(identifier: id)
-            tHandler.setStreams(streams: [handlerMock])
+            tHandler.add(streams: [handlerMock])
             return tHandler
         }
         log.info("some message", metadata: ["one": .string("two")], file: "someFile", function: "someFunction", line: 123)

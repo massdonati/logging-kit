@@ -39,6 +39,12 @@ extension Logger.Metadata {
         }
         return nil
     }
+
+    func merge(_ other: Logger.Metadata?) -> Logger.Metadata? {
+        var logMeta = self
+        logMeta += other
+        return logMeta.isEmpty ? nil : logMeta
+    }
 }
 
 extension Logger.MetadataValue {

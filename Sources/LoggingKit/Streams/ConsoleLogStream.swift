@@ -13,7 +13,15 @@ public class ConsoleLogStream: MappedLogStream {
     public let identifier: String
     public let dispatchingMode: DispatchingMode
     public let level: Level
-    public var metadata: Logger.Metadata
+    @Atomic var _metadata: Logger.Metadata
+    public var metadata: Logger.Metadata {
+        get{
+            _metadata
+        }
+        set(newValue) {
+            _metadata = newValue
+        }
+    }
     public let mapper: StringLogMapper
 
     public init(identifier: String,
@@ -24,7 +32,7 @@ public class ConsoleLogStream: MappedLogStream {
         self.identifier = identifier
         self.dispatchingMode = dispatchingMode
         self.level = level
-        self.metadata = metadata
+        self._metadata = metadata
         self.mapper = formatter
     }
 
