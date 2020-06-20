@@ -1,7 +1,12 @@
 import XCTest
 
-import LoggingKit
+#if os(Linux) || os(FreeBSD)
+@testable import LoggingKitTests
 
-var tests = [XCTestCaseEntry]()
-tests += LoggingKitTests.allTests()
-XCTMain(tests)
+XCTMain([
+    testCase(LogHandlerAutoStreamConformanceTests.allTests),
+    testCase(LoggingKitTests.allTests),
+    testCase(MetadataTests.allTests),
+    testCase(StringFormatterTests.allTests),
+])
+#endif

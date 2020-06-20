@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  StringFormatterTests.swift
 //  
 //
 //  Created by Massimo Donati on 6/20/20.
@@ -244,19 +244,4 @@ class StringFormatterTests: XCTestCase {
         let outStringTwo = mapper.map(log)
         XCTAssertEqual("[\(expectedString)]", outStringTwo)
     }
-
-    static var allTests = [
-        ("testDefaultFormatString", testDefaultFormatString),
-        ("testDefaultDateFormatterFormat", testDefaultDateFormatterFormat),
-        ("testDateOnly", testDateOnly),
-        ("testHandlerOnly", testHandlerOnly),
-        ("testThreadNameOnly", testThreadNameOnly),
-        ("testLevelNameOnly", testLevelNameOnly),
-        ("testLevelSymbolOnly", testLevelSymbolOnly),
-        ("testFileNameOnly", testFileNameOnly),
-        ("testFunctionNameOnly", testFunctionNameOnly),
-        ("testLineNumberOnly", testLineNumberOnly),
-        ("testMessageOnly", testMessageOnly),
-        ("testMetadataOnly", testMetadataOnly)
-    ]
 }

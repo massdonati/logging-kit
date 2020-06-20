@@ -1,5 +1,5 @@
 //
-//  LogHandlerTests.swift
+//  LogHandlerAutoStreamConformanceTests.swift
 //  
 //
 //  Created by Massimo Donati on 6/17/20.
@@ -25,7 +25,6 @@ final class LogHandlerAutoStreamConformanceTests: XCTestCase {
             XCTAssertEqual(line, 123)
             print(Date())
             expectation.fulfill()
-
         }
 
         XCTAssertEqual(handlerMock.dispatchingMode, .async)
@@ -41,10 +40,6 @@ final class LogHandlerAutoStreamConformanceTests: XCTestCase {
 
         wait(for: [expectation], timeout: 2)
     }
-
-    static var allTests = [
-        ("testAutoStreamConformace", testAutoStreamConformace),
-    ]
 }
 
 class HanlderMock: LogHandler, LoggingKit.LogStream {

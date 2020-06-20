@@ -1,3 +1,9 @@
+//
+//  MetadataTests.swift
+//
+//
+//  Created by Massimo Donati on 6/20/20.
+//
 import XCTest
 import Logging
 @testable import LoggingKit
