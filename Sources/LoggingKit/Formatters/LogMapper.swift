@@ -21,7 +21,7 @@ public protocol LogMapper {
     /**
      Maps a Log instance into the `Output`
      - parameter log: a log instance
-     - returns: either the mapped `Output` or an error indicating what went wrong
+     - returns: the result of the mapping
      */
-    func map(_ log: Log) -> Result<Output, Error>
+    func map(_ log: Log) -> Output
 }

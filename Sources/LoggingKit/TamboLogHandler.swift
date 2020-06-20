@@ -49,7 +49,7 @@ public struct TamboLogHandler: LogHandler {
                     line: UInt) {
 
         let log = Log(
-            handlerIdentifier: identifier,
+            handler: identifier,
             level: level,
             date: Date(),
             message: message,

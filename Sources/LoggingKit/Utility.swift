@@ -13,5 +13,8 @@ func threadName() -> String? {
 }
 
 func filename(from path: String) -> String? {
-    return URL(fileURLWithPath: path).pathComponents.last
+    return URL(fileURLWithPath: path)
+        .deletingPathExtension()
+        .pathComponents
+        .last
 }

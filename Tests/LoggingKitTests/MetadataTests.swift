@@ -3,7 +3,7 @@ import Logging
 @testable import LoggingKit
 
 final class MetadataTests: XCTestCase {
-    func testExample() {
+    func testCombiningMetadata1() {
         var meta1: Logger.Metadata = ["ciccio": .string("ciccio")]
         let meta2: Logger.Metadata = ["ciccio1": .string("ciccio")]
 
@@ -12,7 +12,7 @@ final class MetadataTests: XCTestCase {
         XCTAssertEqual(meta1.keys.count, 2)
     }
 
-    func testExample2() {
+    func testCombiningMetadata2() {
         var meta1: Logger.Metadata = ["ciccio": .string("ciccio")]
         let meta2: Logger.Metadata? = nil
 
@@ -21,7 +21,7 @@ final class MetadataTests: XCTestCase {
         XCTAssertEqual(meta1.keys.count, 1)
     }
     static var allTests = [
-        ("testExample", testExample),
-        ("testExample2", testExample2)
+        ("testCombiningMetadata1", testCombiningMetadata1),
+        ("testCombiningMetadata2", testCombiningMetadata2)
     ]
 }

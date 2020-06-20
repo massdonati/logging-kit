@@ -28,7 +28,7 @@ public class ConsoleLogStream: MappedLogStream {
         self.mapper = formatter
     }
 
-    public func output(original log: Log, result: Result<String, Error>) {
+    public func output(original log: Log, result: String) {
         print(result.description)
     }
 }

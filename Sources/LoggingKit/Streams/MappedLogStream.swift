@@ -11,7 +11,7 @@ public protocol MappedLogStream: LogStream {
     associatedtype Mapper: LogMapper
     var mapper: Mapper {get}
 
-    func output(original log: Log, result: Result<Mapper.Output, Error>)
+    func output(original log: Log, result: Mapper.Output)
 }
 
 public extension MappedLogStream {

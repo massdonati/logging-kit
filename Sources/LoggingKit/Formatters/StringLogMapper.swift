@@ -17,7 +17,7 @@ import Foundation
  - Example:
  ```
  let format = """
-    [D] [H] T L F:# f - m
+    [d] [h] t s F:# f - m
     M
     """
  log.info("log message", metadata: ["user_id": .string("123")])
@@ -41,7 +41,7 @@ import Foundation
  ```
  the string that will be print out would be this one
  ```
- File.swift::40 - INFO - log message
+ File::40 - INFO - log message
  ```
   */
 public final class StringLogMapper: LogMapper {
@@ -49,14 +49,8 @@ public final class StringLogMapper: LogMapper {
     public typealias FormatString = String
 
     enum Constants {
-        static let dateFormatter: DateFormatter = {
-            let df = DateFormatter()
-            df.dateFormat = "HH:mm:ss.SSS"
-            return df
-        }()
-
         static let defaultFormat = """
-            [D] [H] T S F:# f - m
+            [d] [h] t s F:# f - m
             M
             """
     }
@@ -69,29 +63,30 @@ public final class StringLogMapper: LogMapper {
 
     /**
      The date formatter to be used to produce the string value.
-     - note: The default one will format the date using `"HH:mm:ss.SSS"`
+     - note: The default one will format the date using `String(describing:)`
      */
-    public let dateFormatter: DateFormatter
+    public let dateFormatter: DateFormatter?
 
     /// Designated initializer.
     public init(with format: FormatString? = nil,
                 writingOption: JSONSerialization.WritingOptions = .prettyPrinted,
                 dateFormatter: DateFormatter? = nil) {
         self.logFormat = format ?? Constants.defaultFormat
-        self.dateFormatter = dateFormatter ?? Constants.dateFormatter
+        self.dateFormatter = dateFormatter
         self.writingOption = writingOption
     }
 
-    public func map(_ log: Log) -> Result<String, Error>  {
+    public func map(_ log: Log) -> String  {
         var outputString = ""
 
         logFormat.forEach { ch in
             switch ch {
             case LogInfoKey.date.rawValue:
-                outputString += dateFormatter.string(from: log.date)
+                outputString += dateFormatter?.string(from: log.date)
+                    ?? String(describing: log.date)
 
             case LogInfoKey.handler.rawValue:
-                outputString += log.handlerIdentifier
+                outputString += log.handler
 
             case LogInfoKey.level.rawValue:
                 outputString += log.level.rawValue
@@ -128,7 +123,7 @@ public final class StringLogMapper: LogMapper {
         let cleanedOutput = outputString
             .trimmingCharacters(in: .whitespaces)
 
-        return .success(cleanedOutput)
+        return cleanedOutput
     }
 }
 
@@ -136,10 +131,10 @@ public final class StringLogMapper: LogMapper {
 enum LogInfoKey: Character {
 
     /// The time the `Log` instance was originated at.
-    case date = "D"
+    case date = "d"
 
     /// The logger identifier the `Log` instance  was originated from.
-    case handler = "H"
+    case handler = "h"
 
     /// The `Log`'s level name
     case level = "l"
@@ -147,14 +142,14 @@ enum LogInfoKey: Character {
     /// The `Log`'s level name all cap
     case levelAllCaps = "L"
 
-    /// The `Log`'s level symbol  i.e. "ℹ️" for info
-    case levelSymbol = "S"
+    /// The `Log`'s level symbol  i.e. "🔷" for info
+    case levelSymbol = "s"
 
     /// The `Log` instance's message.
     case message = "m"
 
     /// The thread name the `Log` instance was originate from.
-    case thread = "T"
+    case thread = "t"
 
     /// The function name the `Log` instance  was originated from.
     case function = "f"
@@ -163,7 +158,7 @@ enum LogInfoKey: Character {
     case file = "F"
 
     /// The full path and file name the `Log` message was executed from
-    case path = "P"
+    case path = "p"
 
     /// The line number the `Log` instance  was originated from.
     case line = "#"

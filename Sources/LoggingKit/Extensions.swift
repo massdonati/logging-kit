@@ -48,7 +48,7 @@ extension Logger.MetadataValue {
         case.string(let string):
             return string
         case .stringConvertible(let stringConvertible):
-            return stringConvertible.description
+            return stringConvertible
 
         case .array(let elements):
             return elements.map { $0.toJsonObject() }

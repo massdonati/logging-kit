@@ -9,7 +9,7 @@ import XCTest
 import Logging
 @testable import LoggingKit
 
-final class LogHandlerTests: XCTestCase {
+final class LogHandlerAutoStreamConformanceTests: XCTestCase {
     func testAutoStreamConformace() {
 
         let handlerMock = HanlderMock()

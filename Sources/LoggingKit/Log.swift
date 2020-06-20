@@ -8,13 +8,10 @@
 import Foundation
 import Logging
 
-public struct Log: Identifiable {
-
-    /// identifier associated with this specific `Log` instance
-    public var id = UUID().uuidString
+public struct Log {
 
     /// the Logger handler identifier this object was dispatched from.
-    public let handlerIdentifier: String
+    public let handler: String
 
     /// The level of the log i.e. `.info`.
     public let level: Logger.Level
@@ -57,8 +54,7 @@ extension Log {
     func toDictionary() -> [String: Any] {
 
         var dict: [String: Any] = [
-            "id": id,
-            "handler_identifier": handlerIdentifier,
+            "handler_identifier": handler,
             "level": level,
             "date": date,
             "message": message.description,
