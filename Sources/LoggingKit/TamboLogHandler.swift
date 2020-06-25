@@ -10,7 +10,10 @@ import Logging
 
 var log: Logger?
 
-public enum LoggingKitSystem {
+public enum TamboLoggingSystem {
+    public static func logger(label: String, _ factory: (String) -> TamboLogHandler) -> Logger {
+        return Logger(label: label, factory: factory)
+    }
     public static func setDebug(_ debug: Bool) {
         log = debug ? Logger(label: "com.tambo.handler.debug.logger") : nil
     }
